@@ -1,0 +1,22 @@
+FROM jenkins/agent:latest-jdk21
+ 
+USER root
+ 
+# Install dependencies for NodeSource setup
+RUN apt-get update && \
+    apt-get install -y ca-certificates curl gnupg && \
+    mkdir -p /etc/apt/keyrings
+ 
+# Add NodeSource GPG key and repository (Node.js 22 LTS)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+ 
+# Install Node.js (includes npm)
+RUN apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+ 
+# Verify installation
+RUN node --version && npm --version
+ 
+# Switch back to the jenkins user
+USER jenkins
